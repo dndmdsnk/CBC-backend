@@ -5,10 +5,16 @@ import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
 import orderRouter from "./routes/orderRouter.js";
 import jwt from "jsonwebtoken";
+import cors from "cors";
+import dotenv from "dotenv"
+
+dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
+
 
 app.use((req,res,next)=>{
     const tokenString = req.header("Authorization")
@@ -16,7 +22,7 @@ app.use((req,res,next)=>{
         const token = tokenString.replace("Bearer ", "")
       
 
-        jwt.verify(token, "cbc-batch-five#@2025", (err, decoded) => {
+        jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
             if(decoded != null){
                  req.user = decoded
                  next()
@@ -37,7 +43,7 @@ app.use((req,res,next)=>{
 
 mongoose
   .connect(
-    "mongodb+srv://admin:23233@cluster0.iu8fm6h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+   process.env.MONGODB_URL
   )
   .then(() => {
     console.log("Connected to MongoDB");
@@ -47,9 +53,9 @@ mongoose
   });
 
 
-app.use("/products", productRouter);
-app.use("/users", userRouter);
-app.use("/orders", orderRouter);
+app.use("/api/products", productRouter);
+app.use("/api/users", userRouter);
+app.use("/api/orders", orderRouter);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

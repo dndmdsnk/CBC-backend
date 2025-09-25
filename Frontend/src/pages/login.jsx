@@ -2,8 +2,45 @@ import React from "react";
 import { FaGoogle } from "react-icons/fa";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import logo from "../assets/logo.png";
+import { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  async function handleLogin(event) {
+    event.preventDefault();
+   
+
+    try{
+   const response = await axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/login", {
+      email: email,
+      password: password,
+    });
+    toast.success("Login Successful")
+    console.log(response.data);
+    localStorage.setItem("token", response.data.token);
+
+    if(response.data.type === "admin"){
+    navigate("/admin");
+    }else{
+      navigate("/");
+    }
+ 
+
+  }catch(e){
+    toast.error("Login Failed")
+    console.log( e.response.data.message);
+  }
+}
+
   return (
     <div
       className="w-full h-screen flex flex-col justify-center items-center bg-cover bg-top bg-no-repeat"
@@ -16,7 +53,7 @@ export default function LoginPage() {
 
       <div className="  w-[1130px] h-[680px] grid grid-cols-1 md:grid-cols-2  ">
         {/* Left Side */}
-        <div className="  border-15  border-red-50 bg-transparent flex items-center justify-center rounded-tl-3xl rounded-bl-3xl overflow-hidden ">
+        <div className="  border-15  border-red-50 bg-transparent flex items-center justify-center rounded-tl-3xl rounded-bl-3xl overflow-hidden shadow-red-300 ">
           <div className="w-full h-full flex shadow-md text-gray-200">
             <p className="font-serif  text-md p-4 fixed mx-95">A WISE QUOTE</p>
 
@@ -35,7 +72,7 @@ export default function LoginPage() {
         </div>
 
         {/* Right Side */}
-        <div className=" flex flex-col items-center justify-center  bg-red-50  rounded-tr-3xl rounded-br-3xl overflow-hidden gap-9">
+        <div className=" flex flex-col items-center justify-center backdrop-blur-md  shadow-xl rounded-tr-3xl rounded-br-3xl overflow-hidden gap-9">
           <div className=" w-[500px] h-[70px] flex  justify-center items-center mb-150 mr-12">
             <img className="w-20 h-20" src={logo} alt="Logo" />
             <p className="text-black text-xs  font-serif">Glow Theory</p>
@@ -48,7 +85,10 @@ export default function LoginPage() {
             <p className="text-black text-xs  font-serif text-center">
               Enter your email and password to access your account
             </p>
-            <form className="w-full max-w-md space-y-6 mb-98 fixed ">
+            <form
+              onSubmit={handleLogin}
+              className="w-full max-w-md space-y-6 mb-98 fixed "
+            >
               <div>
                 <label
                   htmlFor="email"
@@ -57,6 +97,10 @@ export default function LoginPage() {
                   Email
                 </label>
                 <input
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  value={email}
                   type="email"
                   id="email"
                   className="mt-1 block w-full px-4 py-3 rounded-md border border-white focus:outline-none focus:ring-2 focus:ring-black focus:border-black  placeholder-gray-400 focus:placeholder-white"
@@ -72,6 +116,10 @@ export default function LoginPage() {
                   Password
                 </label>
                 <input
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  value={password}
                   type="password"
                   id="password"
                   className="mt-1 block w-full px-4 py-3 rounded-md border border-white focus:outline-none focus:ring-2 focus:ring-black focus:border-black  placeholder-gray-400 focus:placeholder-white"

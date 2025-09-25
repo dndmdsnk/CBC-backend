@@ -1,12 +1,13 @@
 import "./App.css";
 import LoginPage from "./pages/login";
-import SignupPage from "./pages/signup";
 import Homepage from "./pages/homepage";
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/header";
 import AdminPage from "./pages/adminPage";
 import TestPage from "./pages/testPage";
+import { Toaster } from "react-hot-toast";
+import RegisterPage from "./pages/register";
 
 
 
@@ -16,13 +17,14 @@ function App() {
     <BrowserRouter>
      
       <div>
+        <Toaster position='top-center'/>
         
        {/*<Header />*/}
          
         <Routes path="/*">
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/signup" element={<RegisterPage />} />
           <Route path="/admin/*" element={<AdminPage/>} />
           <Route path="/testing" element={<TestPage/>} />
           <Route path="/*" element={<h1>404 Not Found</h1>} />
