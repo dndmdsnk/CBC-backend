@@ -12,7 +12,7 @@ export default function ProductOverview() {
   const [status, setStatus] = useState("loading"); // loading , success , error
   const [product, setProduct] = useState(null);
   const navigate = useNavigate();
-  
+   
 
   useEffect(() => {
     axios

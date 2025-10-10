@@ -91,3 +91,61 @@ export async function createOrder(req, res) {
       .json({ message: "Error creating order", error: err.message });
   }
 }
+
+export async function getOrders(req,res) {
+  if(req.user == null) {
+    res.status(403).json({
+      message: "please login and try again",
+    });
+    return;
+  }
+  try{
+    if(req.user.role == "admin"){
+      const orders = await Order.find();
+      res.json(orders);
+    }else{
+      const orders = await Order.find({ email: req.user.email});
+      res.json(orders);
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to fetch orders",
+      error: err,
+    });
+  }
+}
+
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    // Validate input
+    if (!status) {
+      return res.status(400).json({ message: "Status is required" });
+    }
+
+    const validStatuses = ["pending", "completed", "cancelled", "returned"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid order status" });
+    }
+
+    // Find order
+    const order = await Order.findOne({ orderId });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Update
+    order.status = status;
+    await order.save();
+
+    return res.status(200).json({
+      message: "Order status updated successfully",
+      updatedOrder: order,
+    });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

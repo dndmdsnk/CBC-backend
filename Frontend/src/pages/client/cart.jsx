@@ -1,88 +1,148 @@
-import { useState } from "react"
-import { addToCart, getCart, getTotal, removeFromCart } from "../../utils/cart"
-import { BiMinus, BiPlus, BiTrash } from "react-icons/bi"
-import { Link } from "react-router-dom"
+import { useState } from "react";
+import { addToCart, getCart, getTotal, removeFromCart } from "../../utils/cart";
+import { BiMinus, BiPlus, BiTrash } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import Header from "@/components/header";
 
-export default function CartPage(){
-    const [cart,setCart] = useState(getCart())
+export default function CartPage() {
+  const [cart, setCart] = useState(getCart());
 
-    return(
-        <div className="w-full max-w-full  h-full flex flex-col items-center pt-4 relative ">
-            <div className="z-50 hidden  w-[400px] h-[80px] shadow-2xl absolute bottom-1 md:top-1 right-1 md:flex flex-col justify-center items-center">
-                <p className="text-2xl text-secondary font-bold">Total: 
-                    <span className="text-accent font-bold mx-2">
-                        {getTotal().toFixed(2)}
-                    </span>
-                </p>
-                <Link to="/checkout" state={
-                    {
-                        cart: cart
-                    }
-                } className="text-white bg-accent px-4 py-2 rounded-lg font-bold hover:bg-secondary transition-all duration-300">
-                    Checkout
-                </Link>
+  return (
+    
+    <div className="w-full flex flex-col justify-center items-center  data-twe-container bg-black">
+
+    < Header/>
+    <div className="w-full min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white flex flex-col items-center py-10 px-4">
+    
+
+      <h1 className="text-4xl md:text-5xl font-bold text-green-400 mb-8 mt-15">
+        Your Cart
+      </h1>
+
+      {/* 🧾 Cart Items */}
+      <div className="w-full max-w-4xl flex flex-col gap-6">
+        {cart.length === 0 && (
+          <div className="text-center text-gray-400 text-xl py-20">
+            Your cart is empty 🛍️
+          </div>
+        )}
+
+        {cart.map((item) => (
+          <div
+            key={item.productId}
+            className="relative bg-white/5 border border-white/10 rounded-2xl shadow-lg backdrop-blur-md p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-6 transition-all hover:scale-[1.01]"
+          >
+            {/* 🖼️ Product Image */}
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-[120px] h-[120px] md:w-[130px] md:h-[130px] object-cover rounded-2xl shadow-md"
+            />
+
+            {/* 📄 Product Info */}
+            <div className="flex flex-col md:flex-1 md:items-start text-center md:text-left">
+              <h2 className="text-xl md:text-2xl font-semibold text-green-400">
+                {item.name}
+              </h2>
+              <p className="text-gray-400 text-sm mb-1">{item.productId}</p>
+              {item.labelledPrice > item.price ? (
+                <div className="flex justify-center md:justify-start items-center gap-3">
+                  <span className="text-gray-500 line-through text-md">
+                    Rs. {item.labelledPrice.toFixed(2)}
+                  </span>
+                  <span className="text-green-400 text-lg font-bold">
+                    Rs. {item.price.toFixed(2)}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-green-400 text-lg font-bold">
+                  Rs. {item.price.toFixed(2)}
+                </span>
+              )}
             </div>
-            {
-                cart.map(
-                    (item)=>{
-                        return(
-                            <div key={item.productId} className="w-[70%] md:w-[600px] my-4 md:h-[100px] rounded-tl-3xl rounded-bl-3xl bg-primary shadow-2xl flex flex-col md:flex-row relative justify-center items-center p-2 md:pt-0">
-                                <img src={item.image} className="w-[100px] h-[100px] object-cover rounded-3xl"/>
-                                <div className="w-[250px] h-full flex flex-col justify-center  items-center md:items-start pl-4">
-                                    <h1 className="text-xl text-secondary font-semibold">{item.name}</h1>
-                                    <h1 className="text-md text-gray-600 font-semibold">{item.productId}</h1>
-                                    {
-                                        item.labelledPrice > item.price ?
-                                        <div>
-                                            <span className="text-md mx-1 text-gray-500 line-through">{item.labelledPrice.toFixed(2)}</span>
-                                            <span className="text-md mx-1 font-bold text-accent">{item.price.toFixed(2)}</span>
-                                        </div>
-                                        :<span className="text-md mx-1 font-bold text-accent">{item.price.toFixed(2)}</span>
-                                    }
-                                </div>
-                                <div className="max-w-[100px] w-[100px]  h-full flex flex-row justify-evenly items-center">
-                                    <button className="text-white font-bold rounded-xl hover:bg-secondary p-2 text-xl cursor-pointer aspect-square bg-accent"
-                                    onClick={()=>{
-                                        addToCart(item, -1)
-                                        setCart(getCart())
-                                    }}><BiMinus/></button>
-                                    <h1 className="text-xl text-secondary font-semibold h-full flex items-center">{item.qty}</h1>
-                                    <button className="text-white font-bold rounded-xl hover:bg-secondary p-2 text-xl cursor-pointer  aspect-square bg-accent" onClick={()=>{
-                                        addToCart(item , 1)
-                                        setCart(getCart())
-                                    }}><BiPlus/></button>                                
-                                </div>
-                                {/* total */}
-                                <div className="w-[200px] h-full flex flex-col justify-center items-center md:items-end pr-4">
-                                    <h1 className="text-2xl text-secondary font-semibold">Rs. {(item.price*item.qty).toFixed(2)}</h1>
-                                </div>
-                                <button className="absolute text-red-600 cursor-pointer hover:bg-red-600 hover:text-white rounded-full p-2 right-[-35px] " onClick={
-                                    ()=>{
-                                        removeFromCart(item.productId)
-                                        setCart(getCart())
-                                    }
-                                }>
-                                    <BiTrash/>
-                                </button>
-                            </div> 
-                        )
-                    }
-                )
-            }
-            <div className="z-50 md:hidden  flex w-full h-[100px] shadow-2xl    flex-col justify-center items-center">
-                <p className="text-2xl text-secondary font-bold">Total: 
-                    <span className="text-accent font-bold mx-2">
-                        {getTotal().toFixed(2)}
-                    </span>
-                </p>
-                <Link to="/checkout" state={
-                    {
-                        cart: cart
-                    }
-                } className="text-white bg-accent px-4 py-2 rounded-lg font-bold hover:bg-secondary transition-all duration-300">
-                    Checkout
-                </Link>
+
+            {/* 🔢 Quantity Controls */}
+            <div className="flex items-center gap-4 bg-white/5 px-3 py-2 rounded-xl">
+              <button
+                onClick={() => {
+                  addToCart(item, -1);
+                  setCart(getCart());
+                }}
+                className="bg-green-500 hover:bg-green-400 p-2 rounded-lg text-white text-xl transition-all"
+              >
+                <BiMinus />
+              </button>
+              <span className="text-lg font-semibold">{item.qty}</span>
+              <button
+                onClick={() => {
+                  addToCart(item, 1);
+                  setCart(getCart());
+                }}
+                className="bg-green-500 hover:bg-green-400 p-2 rounded-lg text-white text-xl transition-all"
+              >
+                <BiPlus />
+              </button>
             </div>
-        </div>
-    )
+
+            {/* 💰 Item Total */}
+            <div className="text-center md:text-right">
+              <h3 className="text-2xl font-bold text-green-400">
+                Rs. {(item.price * item.qty).toFixed(2)}
+              </h3>
+            </div>
+
+            {/* 🗑️ Delete Button */}
+            <button
+              className="absolute top-3 right-3 text-red-500 hover:text-white hover:bg-red-500 rounded-full p-2 transition-all"
+              onClick={() => {
+                removeFromCart(item.productId);
+                setCart(getCart());
+              }}
+            >
+              <BiTrash className="text-xl" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* 💳 Checkout Bar (Desktop) */}
+      {cart.length > 0 && (
+        <>
+          <div className="hidden md:flex fixed bottom-5 right-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-5 flex-col justify-center items-center z-50">
+            <p className="text-2xl font-semibold text-gray-200">
+              Total:
+              <span className="text-green-400 font-bold mx-2">
+                Rs. {getTotal().toFixed(2)}
+              </span>
+            </p>
+            <Link
+              to="/checkout"
+              state={{ cart }}
+              className="mt-3 w-[200px] text-center bg-green-500 hover:bg-green-400 text-white py-2 rounded-lg font-semibold transition-all duration-300"
+            >
+              Checkout
+            </Link>
+          </div>
+
+          {/* 📱 Mobile Total Bar */}
+          <div className="md:hidden mt-10 w-full bg-white/5 border-t border-white/10 py-4 rounded-t-3xl shadow-inner flex flex-col justify-center items-center">
+            <p className="text-2xl font-semibold text-gray-200">
+              Total:
+              <span className="text-green-400 font-bold mx-2">
+                Rs. {getTotal().toFixed(2)}
+              </span>
+            </p>
+            <Link
+              to="/checkout"
+              state={{ cart }}
+              className="mt-3 w-[180px] text-center bg-green-500 hover:bg-green-400 text-white py-2 rounded-lg font-semibold transition-all duration-300"
+            >
+              Checkout
+            </Link>
+          </div>
+        </>
+      )}
+    </div>
+    </div>
+  );
 }

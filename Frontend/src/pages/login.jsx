@@ -1,11 +1,13 @@
 import React from "react";
-import { FaGoogle } from "react-icons/fa";
+import { FaArrowCircleLeft, FaGoogle } from "react-icons/fa";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google"
 
 
 
@@ -14,6 +16,27 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const googleLogin  = useGoogleLogin({
+    onSuccess: (response)=>{
+        const accessToken = response.access_token
+        axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/login/google", {
+            accessToken: accessToken
+        }).then((response)=>{
+            toast.success("Login Successful")
+            const token = response.data.token
+            localStorage.setItem("token", token)
+            if(response.data.role === "admin"){
+                navigate("/admin/")
+            }
+            else{
+                navigate("/")
+            }
+        })
+    }
+})
+
+
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -49,6 +72,9 @@ export default function LoginPage() {
           "url('https://images.pexels.com/photos/1161931/pexels-photo-1161931.jpeg')",
       }}
     >
+    
+
+
       <div className="absolute inset-0 bg-black/15"></div>
 
       <div className="  w-[1130px] h-[680px] grid grid-cols-1 md:grid-cols-2  ">
@@ -146,12 +172,12 @@ export default function LoginPage() {
                     Remember me
                   </label>
                 </div>
-                <a
-                  href="#"
+                <Link
+                  to = "/forgetpassword"
                   className="font-medium text-gray-600 hover:text-black"
                 >
                   Forgot Password
-                </a>
+                </Link>
               </div>
 
               <button
@@ -168,6 +194,7 @@ export default function LoginPage() {
               </div>
 
               <button
+              onClick={googleLogin}
                 type="button"
                 className="w-full flex items-center justify-center py-3 rounded-md border border-black font-semibold text-gray-700 hover:bg-gray-50 transition duration-300"
               >
@@ -179,12 +206,12 @@ export default function LoginPage() {
             <div className="text-center my-113 ">
               <p className="text-gray-600 text-sm">
                 Don't have an account?{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/signup"
                   className="text-black font-semibold hover:underline"
                 >
                   Sign Up
-                </a>
+                  </Link>
               </p>
             </div>
           </div>

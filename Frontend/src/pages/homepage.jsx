@@ -16,7 +16,7 @@ import ProductPage from "./client/ProductPage";
 
 export default function Homepage() {
   return (
-    <div className="w-full  flex flex-col justify-center items-center  data-twe-container bg-black">
+    <div className="w-full  flex flex-col justify-center items-center  data-twe-container bg-gradient-to-b from-gray-950 via-gray-900 to-black">
  
  <Header />
 
@@ -61,7 +61,7 @@ export default function Homepage() {
     ].map((src, index) => (
       <CarouselItem key={index} className="basis-full">
         <div className="h-[95vh] flex items-center justify-center p-2">
-          <Card className="w-full h-[660px] bg-transparent border-black shadow-black">
+          <Card className="w-full h-[660px] bg-transparent border-none shadow-black">
             <CardContent className="p-0 h-full relative">
               <img
                 src={src}

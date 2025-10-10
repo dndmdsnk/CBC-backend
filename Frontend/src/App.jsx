@@ -13,6 +13,9 @@ import ProductPage from "./pages/client/ProductPage";
 import ProductOverview from "./pages/client/ProductOverview";
 import CartPage from "./pages/client/cart";
 import CheckoutPage from "./pages/client/checkOut";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import ForgetPasswordPage from "./pages/client/forgetPassword";
+import ComingSoon from "./pages/comingSoonPage";
 
 
 
@@ -21,6 +24,7 @@ import CheckoutPage from "./pages/client/checkOut";
 
 function App() {
   return (
+    <GoogleOAuthProvider clientId="391049423367-0hckd0n55jjl2umprt8tqvc3l5hdfsbs.apps.googleusercontent.com">
     <BrowserRouter>
      
       <div>
@@ -38,10 +42,14 @@ function App() {
           <Route path="/productoverview/:id" element={<ProductOverview/>} />
           <Route path="/cart" element={<CartPage/>}/>
           <Route path="/checkout" element={<CheckoutPage/>}/>
+          <Route path="/forgetpassword" element={<ForgetPasswordPage/>}/>
+          <Route path="/about" element={<ComingSoon/>}/>
+          <Route path="/contact" element={<ComingSoon/>}/>
       
         </Routes>
       </div>
     </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 
