@@ -1,4 +1,4 @@
-import { NavLink, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
@@ -25,6 +25,7 @@ import AdminOrdersPage from "./admin/adminOrdersPage";
 export default function AdminPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [status, setStatus] = useState("loading");
+  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -127,6 +128,12 @@ export default function AdminPage() {
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
           </button>
+
+          <Link className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+            to="/"
+          >
+            Home
+          </Link>
         </div>
       </aside>
 
